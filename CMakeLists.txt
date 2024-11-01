@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.22)
+project(CYPHER VERSION 0.1.0)
+set (JUCE_BUILD_EXAMPLES=ON)
+set_property(GLOBAL PROPERTY USE_FOLDERS YES)
+add_subdirectory(JUCE)
+add_subdirectory(CYPHER)
