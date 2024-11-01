@@ -18,3 +18,7 @@ I'm in the middle of getting a nice save and load up and running, would be simpl
 ##### Libraries
 [Juce Framework](https://github.com/juce-framework/JUCE)
 [Exprtk]( https://github.com/ArashPartow/exprtk)
+
+##### EXT Dependencies
+ VST3_SDK
+ vstsdk2.4
