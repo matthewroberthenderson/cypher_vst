@@ -4,6 +4,8 @@
 #include <cypher/Cypher.h>
 #include <cypher/VertexBuffer.h>
 #include "WavefrontObjParser.h"
+#include <iostream>
+#include <mutex>
 
 //embed unchanging elements
 static const std::string vertex_shader =
@@ -93,6 +95,32 @@ namespace cypher_graphics
 {
 
 }
+
+
+
+
+class persistent_data {
+public:
+    persistent_data(const persistent_data&) = delete;
+    persistent_data& operator=(const persistent_data&) = delete;
+
+    static persistent_data& getInstance() {
+        static persistent_data instance;  
+        return instance;
+    }
+
+    juce::String equation_text_current = "always constructed to this, change me before closing";
+
+
+private:
+    persistent_data() {
+        std::cout << "persistent_data_online" << std::endl;
+    }
+
+    ~persistent_data() {
+        std::cout << "persistent_data_destroyed" << std::endl;
+    }
+};
 
 
 struct GL_hooks

@@ -1,5 +1,5 @@
 #include <cypher/CypherControls.h>
-
+#include <cypher/OpenGL.h>
 #define EXAMPLE_EQ "fract(mod(sin(x + tan(x)), 1.0) * 2.0)* sin(x) * 0.1"
 
 
@@ -45,7 +45,14 @@ void CypherControls::initialise() {
     const auto presets = GL_hooks::get_preset_shaders();
     const auto& p = presets[0];
     fragmentDocument.replaceAllContent(p.fragmentShader);
-    synthDocument.replaceAllContent(EXAMPLE_EQ);
+    //sketchy hack to make the equation persistent if the UI deconstructs.
+    //just use a singleton
+    if (persistent_data::getInstance().equation_text_current.isEmpty()) {
+        persistent_data::getInstance().equation_text_current = EXAMPLE_EQ;
+    }
+    else{
+        synthDocument.replaceAllContent(persistent_data::getInstance().equation_text_current);
+    }
     startTimer(1);
 }
 
@@ -92,5 +99,6 @@ void CypherControls::timerCallback()
     auto nc = tabbedComp.getTabBackgroundColour(0);
     auto fragmentShader = fragmentDocument.getAllContent();
     cypher_renderer_inst.current_equation = synthDocument.getAllContent();
+    persistent_data::getInstance().equation_text_current = cypher_renderer_inst.current_equation;
     cypher_renderer_inst.setShaderProgram(vertex_shader.c_str(), fragmentShader, synthDocument.getAllContent());
 }

@@ -133,6 +133,7 @@ namespace audio_plugin {
     {
             String equation = openGLComponent.get()->get_equation();
             value_holder_instance_ref->eq->text = equation.toStdString();
+            persistent_data::getInstance().equation_text_current = equation.toStdString();
             openGLComponent.get()->toBack();
     }
 
