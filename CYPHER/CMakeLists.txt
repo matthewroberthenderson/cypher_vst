@@ -13,22 +13,11 @@ juce_add_plugin(${PROJECT_NAME}
 
 target_sources(${PROJECT_NAME}
     PRIVATE
-        source/main.cpp
         source/PluginEditor.cpp
         source/PluginProcessor.cpp
-        source/Cypher.cpp
-        source/CypherControls.cpp
-        source/Oscilloscope.cpp
-        source/OpenGL.cpp
-        source/VertexBuffer.cpp
-
+        
         ${INCLUDE_DIR}/PluginEditor.h
         ${INCLUDE_DIR}/PluginProcessor.h
-        ${INCLUDE_DIR}/Cypher.h
-        ${INCLUDE_DIR}/CypherControls.h
-        ${INCLUDE_DIR}/Oscilloscope.h
-        ${INCLUDE_DIR}/OpenGL.h
-        ${INCLUDE_DIR}/VertexBuffer.h
 )
 
 target_include_directories(${PROJECT_NAME}
@@ -52,7 +41,7 @@ target_compile_definitions(${PROJECT_NAME}
         JUCE_WEB_BROWSER=0
         JUCE_USE_CURL=0
         JUCE_VST3_CAN_REPLACE_VST2=0
-        CYPER_ASSET_PATH="${CMAKE_CURRENT_SOURCE_DIR}/assets/"
+       # CYPER_ASSET_PATH="${CMAKE_CURRENT_SOURCE_DIR}/assets/"
 )
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/..)
