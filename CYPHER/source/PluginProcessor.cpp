@@ -1,6 +1,10 @@
 #include "cypher/PluginProcessor.h"
 #include "cypher/PluginEditor.h"
 
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+
 //==============================================================================
 AudioPluginAudioProcessor::AudioPluginAudioProcessor()
      : AudioProcessor (BusesProperties()
@@ -159,8 +163,33 @@ bool AudioPluginAudioProcessor::hasEditor() const
     return true; // (change this to false if you choose to not supply an editor)
 }
 
+
+
+
+
+
+std::string generateRandomString(int length) {
+    const std::string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    std::string randomString;
+
+    for (int i = 0; i < length; i++) {
+        int index = rand() % characters.length();
+        randomString += characters[index];
+    }
+
+    return randomString;
+}
+
+
+void AudioPluginAudioProcessor::set_plugin_UID() {
+    srand(static_cast<unsigned int>(time(0)));  // Seed for random number generation
+    int length = 10;  // Desired length of the random string
+    program_uid = generateRandomString(length);
+}
+
 juce::AudioProcessorEditor* AudioPluginAudioProcessor::createEditor()
-{
+{   
+    set_plugin_UID();
     return new AudioPluginAudioProcessorEditor (*this);
 }
 
