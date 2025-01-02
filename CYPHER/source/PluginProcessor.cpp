@@ -1,7 +1,6 @@
 #include "cypher/PluginProcessor.h"
 #include "cypher/PluginEditor.h"
 
-namespace audio_plugin {
 AudioPluginAudioProcessor::AudioPluginAudioProcessor()
     : AudioProcessor(getBusesProperties()),
     state(*this, nullptr, "state",
@@ -155,7 +154,8 @@ void AudioPluginAudioProcessor::setStateInformation(const void* data,
 
   juce::ignoreUnused(data, sizeInBytes);
 }
-}
+
+
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter() {
-  return new audio_plugin::AudioPluginAudioProcessor();
+  return new AudioPluginAudioProcessor();
 }

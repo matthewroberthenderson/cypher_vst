@@ -3,8 +3,8 @@
 #define EXAMPLE_EQ "fract(mod(sin(x + tan(x)), 1.0) * 2.0)* sin(x) * 0.1"
 
 
-CypherControls::CypherControls(CypherRenderer& d)
-    : cypher_renderer_inst(d)
+CypherControls::CypherControls(/*CypherRenderer& d*/)
+   /* : cypher_renderer_inst(d)*/
 {
     addAndMakeVisible(statusLabel);
     statusLabel.setJustificationType(Justification::topLeft);
@@ -58,6 +58,7 @@ void CypherControls::resized()
     auto shaderArea = area.removeFromBottom(area.getHeight() / 2);
     shaderArea.removeFromTop(4);
     tabbedComp.setBounds(shaderArea);
+    //this->setBounds(getLocalBounds());
 }
 
 void CypherControls::updateShader()
@@ -66,14 +67,14 @@ void CypherControls::updateShader()
 }
 
 void CypherControls::mouseDown(const MouseEvent& e) {
-    const ScopedLock lock(cypher_renderer_inst.mutex);
-    cypher_renderer_inst.draggableOrientation.mouseDown(e.getPosition());
+    /*const ScopedLock lock(cypher_renderer_inst.mutex);
+    cypher_renderer_inst.draggableOrientation.mouseDown(e.getPosition());*/
     buttonDown = true;
 }
 
 void CypherControls::mouseDrag(const MouseEvent& e) {
-    const ScopedLock lock(cypher_renderer_inst.mutex);
-    cypher_renderer_inst.draggableOrientation.mouseDrag(e.getPosition());
+    /*const ScopedLock lock(cypher_renderer_inst.mutex);
+    cypher_renderer_inst.draggableOrientation.mouseDrag(e.getPosition());*/
 }
 
 void CypherControls::codeDocumentTextInserted(const String&, int)
@@ -91,6 +92,6 @@ void CypherControls::timerCallback()
     stopTimer();
     auto nc = tabbedComp.getTabBackgroundColour(0);
     auto fragmentShader = fragmentDocument.getAllContent();
-    cypher_renderer_inst.current_equation = synthDocument.getAllContent();
-    cypher_renderer_inst.setShaderProgram(vertex_shader.c_str(), fragmentShader, synthDocument.getAllContent());
+    /*cypher_renderer_inst.current_equation = synthDocument.getAllContent();
+    cypher_renderer_inst.setShaderProgram(vertex_shader.c_str(), fragmentShader, synthDocument.getAllContent());*/
 }

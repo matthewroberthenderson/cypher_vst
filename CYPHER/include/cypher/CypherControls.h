@@ -13,7 +13,7 @@ class CypherControls final : public Component,
 public:
     Label statusLabel;
 
-    CypherControls(CypherRenderer& d);
+    CypherControls(/*CypherRenderer& d*/);
     void initialise();
     void resized() override;
     void mouseUp(const MouseEvent&) override {};
@@ -34,7 +34,7 @@ private:
     void timerCallback() override;
     void lookAndFeelChanged() override {}
 
-    CypherRenderer& cypher_renderer_inst;
+    /*CypherRenderer& cypher_renderer_inst;*/
     CodeDocument fragmentDocument, synthDocument;
     CodeEditorComponent fragmentEditorComp{ fragmentDocument, nullptr },
         synthEditorComp{ synthDocument, nullptr };

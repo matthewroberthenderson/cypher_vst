@@ -4,11 +4,11 @@
 #include "PluginProcessor.h"
 #include "cypher/Cypher.h"
 #include "JuceHeader.h"
-namespace audio_plugin {
 
 class AudioPluginAudioProcessorEditor : public juce::AudioProcessorEditor,
     private juce::Timer,
-    private juce::Value::Listener {
+    private juce::Value::Listener,
+    private CodeDocument::Listener {
 
 public:
   explicit AudioPluginAudioProcessorEditor(AudioPluginAudioProcessor&);
@@ -27,6 +27,12 @@ public:
 
   Slider gainSlider, delaySlider;
 
+  //plugin editor has the code documents, that's all we need
+  CodeDocument fragmentDocument, synthDocument;
+  CodeEditorComponent fragmentEditorComp{ fragmentDocument, nullptr },
+        synthEditorComp{ synthDocument, nullptr };
+    TabbedComponent tabbedComp{ TabbedButtonBar::TabsAtLeft };
+
   void valueChanged(Value&) override
   {
       setSize(lastUIWidth.getValue(), lastUIHeight.getValue());
@@ -41,7 +47,18 @@ public:
   EquationEditor equation_editor;
   double math_value;
   value_holder* value_holder_instance_ref;
+  Label statusLabel;
 
+
+    void codeDocumentTextInserted (const String& newText, int insertIndex) override{
+
+    };
+
+    /** Called by a CodeDocument when text is deleted. */
+    void codeDocumentTextDeleted (int startIndex, int endIndex) override{
+
+    };
+    
   void timerCallback() override;
   void hostMIDIControllerIsAvailable(bool controllerIsAvailable) override
   {
@@ -78,9 +95,9 @@ public:
 
 private:
 
-
+bool debug = false;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioPluginAudioProcessorEditor)
 };
-}  // namespace audio_plugin
+
 #endif

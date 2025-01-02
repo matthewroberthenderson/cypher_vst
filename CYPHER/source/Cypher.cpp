@@ -6,13 +6,13 @@ CypherRenderer::CypherRenderer()
         peer->setCurrentRenderingEngine(0);
 
     setOpaque(true);
-    controlsOverlay.reset(new CypherControls(*this));
-    addAndMakeVisible(controlsOverlay.get());
+    //controlsOverlay.reset(new CypherControls(*this));
+   // addAndMakeVisible(controlsOverlay.get());
     openGLContext.setOpenGLVersionRequired(OpenGLContext::openGL3_2);
     openGLContext.setRenderer(this);
     openGLContext.attachTo(*this);
     openGLContext.setContinuousRepainting(true);
-    controlsOverlay->initialise();
+   // controlsOverlay->initialise();
 
     setSize(500, 500);
 }
@@ -26,8 +26,8 @@ void CypherRenderer::newOpenGLContextCreated()
 {
     freeAllContextObjects();
 
-    if (controlsOverlay != nullptr)
-        controlsOverlay->updateShader();
+   // if (controlsOverlay != nullptr)
+       // controlsOverlay->updateShader();
 }
 
 void CypherRenderer::openGLContextClosing()
@@ -135,14 +135,14 @@ void CypherRenderer::resized()
 {
     const ScopedLock lock(mutex);
     bounds = getLocalBounds();
-    controlsOverlay->setBounds(bounds);
+   // controlsOverlay->setBounds(bounds);
     draggableOrientation.setViewport(bounds);
 }
 
 void CypherRenderer::handleAsyncUpdate()
 {
     const ScopedLock lock(shaderMutex);
-    controlsOverlay->statusLabel.setText(statusText, dontSendNotification);
+   // controlsOverlay->statusLabel.setText(statusText, dontSendNotification);
 }
 
 void CypherRenderer::updateShader()

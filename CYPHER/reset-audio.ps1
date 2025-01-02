@@ -1,0 +1,1 @@
+Restart-Service audiosrv -Force -Confirm
