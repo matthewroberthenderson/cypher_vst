@@ -1,24 +1,23 @@
-# cypher VST
 
-![Alt Text](cypher_demo.gif)
+# DIATONICAL | Diatonic Chord Engine
 
-## Sound Design & Equations
-This is a VST I have been working on called cypher using JUCE and exprtk.
-Equations typed in to the editor directly create the waveform.
-No fancy knobs and buttons (lol except for the two basic delay and volume knobs), no routing the idea is to keep it simple.
+**DIATONICAL** DIATONICAL operates on the principles of **Modulo-12 Arithmetic** and **Set Theory**.
+In music science where the chromatic scale is represented as a set. When you select a "Key" and "Scale," the engine defines a **Subset**. For any chosen scale degree , the engine generates a triad by applying a **Skip-1 Permutation** across the subset. This is a practical application of Combinatorial Harmony, where we restrict the total possible note combinations () to essentially just those that satisfy the specific interval vectors of Major or Minor scales.
 
-#### Future work
-I'm in the middle of getting a nice save and load up and running, would be simple if not for some issues with VST and Ableton that don't crop up with VST3, also been planning on making a layering process for different equations.
+* **Language:** C++20 / JUCE 7
+* **Build System:** CMake
+* **Platform:** Optimized for Windows (VST3)
+* **Logic:** Non-destructive MIDI processing. The engine clears the audio buffer to minimize CPU overhead while prioritizing high-resolution MIDI timestamping.
 
-##### Requirements
--- Windows
--- CMake
--- Opengl
+## Build (Windows)
+Ensure you have **CMake** and **Visual Studio 2022** installed.
+Clone the JUCE library to your machine.
+Run the following in your terminal:
+```bash
+mkdir build && cd build
+cmake ..
+cmake --build . --config Release
 
-##### Libraries
-[Juce Framework](https://github.com/juce-framework/JUCE)
-[Exprtk]( https://github.com/ArashPartow/exprtk)
+```
+Copy the resulting `DIATONICAL.vst3` into your DAW's VST3 folder.
 
-##### EXT Dependencies
- VST3_SDK
- vstsdk2.4

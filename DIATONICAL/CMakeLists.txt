@@ -1,39 +1,29 @@
-set(INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include/cypher")
+set(INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include/DIATONICAL")
 
 juce_add_plugin(${PROJECT_NAME}
-    COMPANY_NAME MRH
+    COMPANY_NAME matthew_henderson
     IS_SYNTH TRUE
     NEEDS_MIDI_INPUT TRUE
     NEEDS_MIDI_OUTPUT TRUE
-    PLUGIN_MANUFACTURER_CODE MCMP
-    PLUGIN_CODE EXPL
+    IS_MIDI_EFFECT TRUE
+    PLUGIN_MANUFACTURER_CODE MH
+    PLUGIN_CODE DIATONICALMRH1
     FORMATS Standalone VST3
-    PRODUCT_NAME "cypher"
+    PRODUCT_NAME "DIATONICAL"
 )
 
 target_sources(${PROJECT_NAME}
     PRIVATE
-        source/main.cpp
         source/PluginEditor.cpp
         source/PluginProcessor.cpp
-        source/Cypher.cpp
-        source/CypherControls.cpp
-        source/Oscilloscope.cpp
-        source/OpenGL.cpp
-        source/VertexBuffer.cpp
-
         ${INCLUDE_DIR}/PluginEditor.h
         ${INCLUDE_DIR}/PluginProcessor.h
-        ${INCLUDE_DIR}/Cypher.h
-        ${INCLUDE_DIR}/CypherControls.h
-        ${INCLUDE_DIR}/Oscilloscope.h
-        ${INCLUDE_DIR}/OpenGL.h
-        ${INCLUDE_DIR}/VertexBuffer.h
 )
 
 target_include_directories(${PROJECT_NAME}
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include
+        ${CMAKE_SOURCE_DIR}/JUCE/extras/WindowsDLL/JuceLibraryCode
 )
 
 target_link_libraries(${PROJECT_NAME}
