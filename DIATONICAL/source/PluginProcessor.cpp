@@ -1,56 +1,65 @@
 #include "DIATONICAL/PluginProcessor.h"
 #include "DIATONICAL/PluginEditor.h"
 
+
 RandomChordAudioProcessor::RandomChordAudioProcessor()
-    : AudioProcessor (BusesProperties()
-                      .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
-                      .withInput  ("Input",  juce::AudioChannelSet::stereo(), false))
-{}
+    : AudioProcessor (BusesProperties().withOutput("Output", juce::AudioChannelSet::stereo(), true))
+{
+    generateStaticMap();
+}
 
 RandomChordAudioProcessor::~RandomChordAudioProcessor() {}
 
-void RandomChordAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
-{
+void RandomChordAudioProcessor::generateStaticMap() {
+    noteToChordMap.clear();
+    const auto& scale = scaleLibrary[currentScale];
+    
+    for (int i = 0; i < 128; ++i) {
+        int degree = i % 7; 
+        std::vector<int> chord;
+
+        if (bachMode) {
+            chord = generateBachVoicing(degree, scale);
+        } else {
+            for (int j : {0, 2, 4}) {
+                int idx = (degree + j) % 7;
+                int octWrap = ((degree + j) / 7) * 12;
+                chord.push_back(48 + currentRoot + scale[idx] + octWrap);
+            }
+        }
+        noteToChordMap[i] = chord;
+    }
+}
+
+std::vector<int> RandomChordAudioProcessor::generateBachVoicing(int degree, const std::vector<int>& scale) {
+    std::vector<int> notes;
+    int rootBase = 48 + currentRoot + scale[degree];
+    notes.push_back(rootBase - 12);                         
+    notes.push_back(rootBase + scale[(degree + 4) % 7]);    
+    notes.push_back(rootBase + 12);                         
+    notes.push_back(rootBase + 12 + scale[(degree + 2) % 7]); 
+    return notes;
+}
+
+void RandomChordAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages) {
     buffer.clear();
     juce::MidiBuffer processedMidi;
 
-    for (const auto metadata : midiMessages)
-    {
+    for (const auto metadata : midiMessages) {
         auto msg = metadata.getMessage();
-        int samplePos = metadata.samplePosition;
+        int triggerNote = msg.getNoteNumber();
 
-        if (msg.isNoteOn())
-        {
-            int triggerNote = msg.getNoteNumber();
-            const auto& scale = scaleLibrary[currentScale];
-            
-            // Pick random Diatonic Degree (0 to 6 is fine for now)
-            int degree = juce::Random::getSystemRandom().nextInt(7);
-            
-            // Build the Triad - Root, 3rd, 5th of the above degree
-            std::vector<int> chordNotes;
-            for (int i : {0, 2, 4}) 
-            {
-                int scaleIndex = (degree + i) % 7;
-                int octaveOffset = ((degree + i) / 7) * 12;
-                
-                // we do the: Base Octave + Root Key + Scale Step + Octave Wrap - method
-                int finalNote = 48 + currentRoot + scale[scaleIndex] + octaveOffset;
-                chordNotes.push_back(finalNote);
-                
-                processedMidi.addEvent(juce::MidiMessage::noteOn(msg.getChannel(), finalNote, msg.getVelocity()), samplePos);
+        if (msg.isNoteOn()) {
+            if (noteToChordMap.count(triggerNote)) {
+                for (int n : noteToChordMap[triggerNote])
+                    processedMidi.addEvent(juce::MidiMessage::noteOn(msg.getChannel(), n, msg.getVelocity()), metadata.samplePosition);
+                activeNotes[triggerNote] = noteToChordMap[triggerNote];
             }
-            activeNotes[triggerNote] = chordNotes;
-        }
-        else if (msg.isNoteOff())
-        {
-            int triggerNote = msg.getNoteNumber();
-            if (activeNotes.count(triggerNote))
-            {
-                for (int noteToOff : activeNotes[triggerNote])
-                {
-                    processedMidi.addEvent(juce::MidiMessage::noteOff(msg.getChannel(), noteToOff, msg.getVelocity()), samplePos);
-                }
+        } 
+        else if (msg.isNoteOff()) {
+            if (activeNotes.count(triggerNote)) {
+                for (int n : activeNotes[triggerNote])
+                    processedMidi.addEvent(juce::MidiMessage::noteOff(msg.getChannel(), n, msg.getVelocity()), metadata.samplePosition);
                 activeNotes.erase(triggerNote);
             }
         }

@@ -1,66 +1,75 @@
 #pragma once
-#include "DIATONICAL/PluginProcessor.h"
+#include "PluginProcessor.h"
 
-class View : public juce::LookAndFeel_V4 {
+class FancyLook : public juce::LookAndFeel_V4 {
 public:
-    void drawComboBox (juce::Graphics& g, int width, int height, bool, int, int, int, int, juce::ComboBox& box) override {
-        g.setColour(juce::Colours::cyan.withAlpha(0.2f));
-        g.fillRoundedRectangle(0, 0, width, height, 5.0f);
+    void drawComboBox (juce::Graphics& g, int w, int h, bool, int, int, int, int, juce::ComboBox&) override {
+        g.setColour(juce::Colours::cyan.withAlpha(0.1f));
+        g.fillRoundedRectangle(0, 0, w, h, 4.0f);
         g.setColour(juce::Colours::cyan);
-        g.drawRoundedRectangle(0, 0, width, height, 5.0f, 1.0f);
+        g.drawRoundedRectangle(0, 0, w, h, 4.0f, 1.0f);
     }
 };
 
-class RandomChordAudioProcessorEditor : public juce::AudioProcessorEditor, public juce::ComboBox::Listener {
+class RandomChordAudioProcessorEditor : public juce::AudioProcessorEditor {
 public:
-    RandomChordAudioProcessorEditor (RandomChordAudioProcessor& p) : AudioProcessorEditor (&p), processor (p) {
-        setLookAndFeel(&View);
+    RandomChordAudioProcessorEditor (RandomChordAudioProcessor& p) 
+        : AudioProcessorEditor (&p), processor (p) 
+    {
+        setLookAndFeel(&fancyLook);
 
-        // Key Selector
-        juce::StringArray keys = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
-        rootSelector.addItemList(keys, 1);
-        rootSelector.setSelectedId(1);
-        rootSelector.addListener(this);
+        rootSelector.addItemList({"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"}, 1);
+        rootSelector.setSelectedItemIndex(processor.currentRoot, juce::dontSendNotification);
+        rootSelector.onChange = [this] { 
+            processor.currentRoot = rootSelector.getSelectedItemIndex(); 
+            processor.generateStaticMap(); 
+        };
         addAndMakeVisible(rootSelector);
 
-        // Scale Selector
-        scaleSelector.addItem("Major", 1);
-        scaleSelector.addItem("Minor", 2);
-        scaleSelector.setSelectedId(1);
-        scaleSelector.addListener(this);
+        scaleSelector.addItemList({"Major", "Minor"}, 1);
+        scaleSelector.setSelectedItemIndex(processor.currentScale, juce::dontSendNotification);
+        scaleSelector.onChange = [this] { 
+            processor.currentScale = scaleSelector.getSelectedItemIndex(); 
+            processor.generateStaticMap(); 
+        };
         addAndMakeVisible(scaleSelector);
 
-        setSize (300, 250);
+        bachToggle.setButtonText("BACH MODE");
+        bachToggle.setToggleState(processor.bachMode, juce::dontSendNotification);
+        bachToggle.onClick = [this] { 
+            processor.bachMode = bachToggle.getToggleState(); 
+            processor.generateStaticMap(); 
+        };
+        addAndMakeVisible(bachToggle);
+
+        setSize (300, 300);
     }
 
     ~RandomChordAudioProcessorEditor() { setLookAndFeel(nullptr); }
 
-    void comboBoxChanged (juce::ComboBox* box) override {
-        if (box == &rootSelector) processor.currentRoot = rootSelector.getSelectedItemIndex();
-        if (box == &scaleSelector) processor.currentScale = scaleSelector.getSelectedItemIndex();
-    }
-
     void paint (juce::Graphics& g) override {
-        juce::ColourGradient grad(juce::Colour(0xff0f0c29), 0, 0, juce::Colour(0xff000000), 0, (float)getHeight(), false);
-        g.setGradientFill(grad);
+        juce::ColourGradient grad(juce::Colour(0xff121212), 0, 0, juce::Colour(0xff000000), 0, (float)getHeight(), false);
+        g.setGradientFill(grad); 
         g.fillAll();
         
-        g.setColour(juce::Colours::cyan);
-        g.setFont(20.0f);
-        g.drawText("DIATONICAL", 0, 20, getWidth(), 30, juce::Justification::centred);
-        
-        g.setFont(12.0f);
-        g.drawText("ROOT", 50, 70, 200, 20, juce::Justification::left);
-        g.drawText("SCALE", 50, 130, 200, 20, juce::Justification::left);
+        g.setColour(juce::Colours::cyan); 
+        g.setFont(24.0f);
+        g.drawText("DIATONICAL", 0, 30, getWidth(), 30, juce::Justification::centred);
+
+        g.setFont(14.0f);
+        g.drawText("Root Key", 50, 75, 200, 20, juce::Justification::left);
+        g.drawText("Scale", 50, 135, 200, 20, juce::Justification::left);
     }
 
     void resized() override {
-        rootSelector.setBounds(50, 90, 200, 30);
-        scaleSelector.setBounds(50, 150, 200, 30);
+        rootSelector.setBounds(50, 95, 200, 35);
+        scaleSelector.setBounds(50, 155, 200, 35);
+        bachToggle.setBounds(50, 210, 200, 40);
     }
 
 private:
-    View View;
+    FancyLook fancyLook;
     juce::ComboBox rootSelector, scaleSelector;
+    juce::ToggleButton bachToggle;
     RandomChordAudioProcessor& processor;
 };
