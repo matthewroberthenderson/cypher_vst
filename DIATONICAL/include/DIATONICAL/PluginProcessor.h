@@ -3,10 +3,10 @@
 #include <vector>
 #include <map>
 
-class RandomChordAudioProcessor : public juce::AudioProcessor {
+class ChordAudioProcessor : public juce::AudioProcessor {
 public:
-    RandomChordAudioProcessor();
-    ~RandomChordAudioProcessor() override;
+    ChordAudioProcessor();
+    ~ChordAudioProcessor() override;
 
     void prepareToPlay (double, int) override {}
     void releaseResources() override {}
@@ -45,5 +45,5 @@ private:
 
     std::vector<int> generateBachVoicing(int degree, const std::vector<int>& scale);
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RandomChordAudioProcessor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ChordAudioProcessor)
 };

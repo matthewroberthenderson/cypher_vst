@@ -1,7 +1,7 @@
 #pragma once
 #include "PluginProcessor.h"
 
-class FancyLook : public juce::LookAndFeel_V4 {
+class Look : public juce::LookAndFeel_V4 {
 public:
     void drawComboBox (juce::Graphics& g, int w, int h, bool, int, int, int, int, juce::ComboBox&) override {
         g.setColour(juce::Colours::cyan.withAlpha(0.1f));
@@ -11,12 +11,12 @@ public:
     }
 };
 
-class RandomChordAudioProcessorEditor : public juce::AudioProcessorEditor {
+class ChordAudioProcessorEditor : public juce::AudioProcessorEditor {
 public:
-    RandomChordAudioProcessorEditor (RandomChordAudioProcessor& p) 
+    ChordAudioProcessorEditor (ChordAudioProcessor& p) 
         : AudioProcessorEditor (&p), processor (p) 
     {
-        setLookAndFeel(&fancyLook);
+        setLookAndFeel(&Look);
 
         rootSelector.addItemList({"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"}, 1);
         rootSelector.setSelectedItemIndex(processor.currentRoot, juce::dontSendNotification);
@@ -45,7 +45,7 @@ public:
         setSize (300, 300);
     }
 
-    ~RandomChordAudioProcessorEditor() { setLookAndFeel(nullptr); }
+    ~ChordAudioProcessorEditor() { setLookAndFeel(nullptr); }
 
     void paint (juce::Graphics& g) override {
         juce::ColourGradient grad(juce::Colour(0xff121212), 0, 0, juce::Colour(0xff000000), 0, (float)getHeight(), false);
@@ -68,8 +68,8 @@ public:
     }
 
 private:
-    FancyLook fancyLook;
+    Look Look;
     juce::ComboBox rootSelector, scaleSelector;
     juce::ToggleButton bachToggle;
-    RandomChordAudioProcessor& processor;
+    ChordAudioProcessor& processor;
 };

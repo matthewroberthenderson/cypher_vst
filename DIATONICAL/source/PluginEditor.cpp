@@ -15,16 +15,16 @@ public:
     }
 };
 
-class RandomChordAudioProcessorEditor : public juce::AudioProcessorEditor {
+class ChordAudioProcessorEditor : public juce::AudioProcessorEditor {
 public:
-    RandomChordAudioProcessorEditor (RandomChordAudioProcessor& p) : AudioProcessorEditor (&p), processor (p) {
+    ChordAudioProcessorEditor (ChordAudioProcessor& p) : AudioProcessorEditor (&p), processor (p) {
         setLookAndFeel(&View);
         addAndMakeVisible(generateBtn);
         generateBtn.setButtonText("RANDOMIZE CHORDS");
         setSize (400, 300);
     }
     
-    ~RandomChordAudioProcessorEditor() { setLookAndFeel(nullptr); }
+    ~ChordAudioProcessorEditor() { setLookAndFeel(nullptr); }
 
     void paint (juce::Graphics& g) override {
         juce::ColourGradient grad(juce::Colour(0xff0f0c29), 0, 0, juce::Colour(0xff24243e), 0, getHeight(), false);
@@ -43,5 +43,5 @@ public:
 private:
     View View;
     juce::TextButton generateBtn;
-    RandomChordAudioProcessor& processor;
+    ChordAudioProcessor& processor;
 };

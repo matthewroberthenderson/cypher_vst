@@ -2,15 +2,15 @@
 #include "DIATONICAL/PluginEditor.h"
 
 
-RandomChordAudioProcessor::RandomChordAudioProcessor()
+ChordAudioProcessor::ChordAudioProcessor()
     : AudioProcessor (BusesProperties().withOutput("Output", juce::AudioChannelSet::stereo(), true))
 {
     generateStaticMap();
 }
 
-RandomChordAudioProcessor::~RandomChordAudioProcessor() {}
+ChordAudioProcessor::~ChordAudioProcessor() {}
 
-void RandomChordAudioProcessor::generateStaticMap() {
+void ChordAudioProcessor::generateStaticMap() {
     noteToChordMap.clear();
     const auto& scale = scaleLibrary[currentScale];
     
@@ -31,7 +31,7 @@ void RandomChordAudioProcessor::generateStaticMap() {
     }
 }
 
-std::vector<int> RandomChordAudioProcessor::generateBachVoicing(int degree, const std::vector<int>& scale) {
+std::vector<int> ChordAudioProcessor::generateBachVoicing(int degree, const std::vector<int>& scale) {
     std::vector<int> notes;
     int rootBase = 48 + currentRoot + scale[degree];
     notes.push_back(rootBase - 12);                         
@@ -41,7 +41,7 @@ std::vector<int> RandomChordAudioProcessor::generateBachVoicing(int degree, cons
     return notes;
 }
 
-void RandomChordAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages) {
+void ChordAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages) {
     buffer.clear();
     juce::MidiBuffer processedMidi;
 
@@ -67,5 +67,5 @@ void RandomChordAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     midiMessages.swapWith(processedMidi);
 }
 
-juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter() { return new RandomChordAudioProcessor(); }
-juce::AudioProcessorEditor* RandomChordAudioProcessor::createEditor() { return new RandomChordAudioProcessorEditor (*this); }
+juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter() { return new ChordAudioProcessor(); }
+juce::AudioProcessorEditor* ChordAudioProcessor::createEditor() { return new ChordAudioProcessorEditor (*this); }
