@@ -10,6 +10,37 @@ ChordAudioProcessor::ChordAudioProcessor()
 
 ChordAudioProcessor::~ChordAudioProcessor() {}
 
+void ChordAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
+{
+    juce::XmlElement xml ("DIATONICAL_STATE");
+    
+    xml.setAttribute ("rootKey", currentRoot);
+    xml.setAttribute ("scaleType", currentScale);
+    xml.setAttribute ("bachEnabled", bachMode);
+
+    copyXmlToBinary (xml, destData);
+}
+
+void ChordAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
+{
+    // Retrieve the XML
+    std::unique_ptr<juce::XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
+
+    if (xmlState != nullptr)
+    {
+        if (xmlState->hasTagName ("DIATONICAL_STATE"))
+        {
+            // Update the processor variables
+            currentRoot = xmlState->getIntAttribute ("rootKey", 0);
+            currentScale = xmlState->getIntAttribute ("scaleType", 0);
+            bachMode = xmlState->getBoolAttribute ("bachEnabled", false);
+
+            // CRITICAL: Rebuild the chord map so it actually plays correctly!
+            generateStaticMap();
+        }
+    }
+}
+
 void ChordAudioProcessor::generateStaticMap() {
     noteToChordMap.clear();
     const auto& scale = scaleLibrary[currentScale];

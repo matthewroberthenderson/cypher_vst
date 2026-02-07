@@ -1,13 +1,13 @@
 set(INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include/DIATONICAL")
 
 juce_add_plugin(${PROJECT_NAME}
-    COMPANY_NAME matthew_henderson
+    COMPANY_NAME mattrhenderson
     IS_SYNTH TRUE
-    NEEDS_MIDI_INPUT TRUE
-    NEEDS_MIDI_OUTPUT TRUE
-    IS_MIDI_EFFECT TRUE
+    NEEDS_MIDI_INPUT TRUE #ableton needs
+    NEEDS_MIDI_OUTPUT TRUE #ableton needs
+    IS_MIDI_EFFECT TRUE #ableton needs
     PLUGIN_MANUFACTURER_CODE MHDB
-    PLUGIN_CODE DIAM
+    PLUGIN_CODE DICTK
     FORMATS Standalone VST3
     PRODUCT_NAME "DIATONICAL"
 )
@@ -42,7 +42,6 @@ target_compile_definitions(${PROJECT_NAME}
         JUCE_WEB_BROWSER=0
         JUCE_USE_CURL=0
         JUCE_VST3_CAN_REPLACE_VST2=0
-        CYPER_ASSET_PATH="${CMAKE_CURRENT_SOURCE_DIR}/assets/"
 )
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/..)
